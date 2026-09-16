@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>iNfy Live Stage - Live Cue Display</title>
+
+    <meta charset="UTF-8">
+    <style>
+        body { background-color: #0d0d0d; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 40px; margin: 0; }
+        .card { background: #1a1a1a; border: 2px solid #333; border-radius: 20px; padding: 30px; max-width: 800px; margin: auto; box-shadow: 0 0 30px rgba(138,43,226,0.3); }
+        .badge { background: #8A2BE2; color: #fff; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+        .track-title { font-size: 42px; font-weight: bold; margin: 25px 0 10px 0; color: #00FFCC; }
+        .next-track { font-size: 22px; color: #aaa; margin-top: 30px; border-top: 1px solid #333; padding-top: 20px; }
+        .status { font-size: 16px; color: #00ff66; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <span class="badge">#HASH iNfisync Lk - Live Stage Controller</span>
+        <p class="status">● GITHUB CLOUD SYNC ACTIVE</p>
+        
+        <div style="margin-top: 40px;">
+            <p style="color: #888; margin: 0;">NOW PLAYING CUE</p>
+            <div class="track-title" id="now-playing">Waiting for Cue...</div>
+        </div>
+
+        <div class="next-track">
+            <span style="color: #888;">UPNEXT CUE: </span>
+            <strong id="next-cue" style="color: #fff;">--</strong>
+        </div>
+    </div>
+
+    <script>
+        // GitHub Repository එකෙන් Live Data Fetch කිරීම (Every 1 Second)
+        async function fetchCue() {
+            try {
+                // Cache Avoid කිරීම සඳහා timestamp එකක් එකතු කරයි
+                let response = await fetch('data.json?v=' + new Date().getTime());
+                if (response.ok) {
+                    let data = await response.json();
+                    document.getElementById('now-playing').innerText = data.now;
+                    document.getElementById('next-cue').innerText = data.next;
+                }
+            } catch (e) {
+                console.log("Sync Error", e);
+            }
+        }
+        setInterval(fetchCue, 1000);
+    </script>
+</body>
+</html>
